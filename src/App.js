@@ -1,23 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react"
+import CoinTable from "./components/CoinTable";
 
-function App() {
+const App = () => {
+//javascript
+  const [coins, setCoins] = useState({
+    datos:[],
+    loading:true,
+    update:false
+  })
+
+  useEffect(() => {
+    //acciones
+    getCoins().then((respuesta)=>{
+      setCoins({
+        datos: respuesta,
+        loading: true,
+        update: false
+      });
+    });
+
+  }, [])
+
+  const getCoins=async() =>{
+  
+    const resp= await fetch('https://api.coincap.io/v2/assets?limit=10');
+    const informacion= await resp.json();
+    //console.log(data.data);
+    return informacion.data;
+  }
+  getCoins()
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <h1>Coin App</h1>
+        </div>
+        <CoinTable coins={coins}/>
+      </div>
     </div>
   );
 }
